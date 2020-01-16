@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
         <div class="container">
         <router-link to="/"><a class="navbar-brand text-success"> <i class="fas fa-taxi"></i> Smart Taxi</a></router-link>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

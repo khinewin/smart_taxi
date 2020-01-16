@@ -3,7 +3,9 @@
     <div id="nav">
         <Navbar></Navbar>
     </div>
-    <router-view/>
+   <div class="mt-4 pt-1">
+     <router-view/>
+   </div>
   </div>
 </template>
 

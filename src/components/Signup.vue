@@ -1,19 +1,17 @@
 <template>
     <div class="container my-5">
-
-
-        <div class="alert alert-danger small" v-if="error">
-           <i class="fas fa-exclamation-circle"></i> {{error}}
-        </div>
-        <div class="alert alert-success small" v-if="success">
-            <i class="fas fa-marker"></i> {{success}}
-        </div>
         <div class="row">
-
-
             <div class="col-sm-4 offset-sm-4">
                 <div class="card shadow">
-                    <div class="card-body p-5">
+                    <div class="card-body px-5 pb-5">
+                        <div class="sticky-top">
+                            <div class="alert alert-danger small" v-if="error">
+                                <i class="fas fa-exclamation-circle"></i> {{error}}
+                            </div>
+                            <div class="alert alert-success small" v-if="success">
+                                <i class="fas fa-marker"></i> {{success}}
+                            </div>
+                        </div>
                         <h2 class="text-success text-center">
                             <i class="fas fa-taxi"></i>
                         </h2>
@@ -152,11 +150,6 @@
 </script>
 
 <style scoped>
-    .alert{
-        position: absolute;
-        top: 80px;
-        right: 10px
-    }
 
 
 </style>
