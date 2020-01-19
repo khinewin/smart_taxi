@@ -15,6 +15,18 @@
                    </router-link>
                </li>
                 <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-arrows-alt"></i> Actions
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdow1n">
+                        <a @click="goNew('region')" class="dropdown-item small" href="#!"> တိုင်း / ပြည်နယ်</a>
+                        <a @click="goNew('city')" class="dropdown-item small" href="#!"> မြို့ / မြို့နယ်</a>
+                        <a @click="goNew('quarter')" class="dropdown-item small" href="#!"> ရပ်ကွက်</a>
+                        <a @click="goNew('driver')" class="dropdown-item small" href="#!"> ယဥ်မောင်း</a>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user-circle"></i> {{isAuth.displayName}}
                     </a>
@@ -23,6 +35,7 @@
 
                     </div>
                 </li>
+
             </ul>
             <ul class="navbar-nav ml-auto" v-else>
                 <li class="nav-item" v-for="url in notAuthUrl" :key="url.name">
@@ -69,6 +82,23 @@
                 Firebase.auth().signOut();
                 this.$store.dispatch("doSignout")
                 this.$router.push("/auth/signin")
+            },
+            goNew(res){
+                switch (res) {
+                    case "region":
+                        this.$router.push("/new/region")
+                        break;
+                    case "city":
+                        this.$router.push("/new/city")
+                        break;
+                    case "quarter":
+                        this.$router.push("/new/quarter")
+                        break;
+                    case "driver":
+                        this.$router.push("/new/driver")
+                        break;
+
+                }
             }
         },
         watch:{

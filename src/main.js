@@ -19,6 +19,8 @@ import Firebase from "./Firebase";
 Vue.use(BootstrapVue)
 
 
+
+
 new Vue({
   router,
   store,

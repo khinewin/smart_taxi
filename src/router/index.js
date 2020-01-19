@@ -7,6 +7,11 @@ import Signin from "../components/Signin";
 import Home from "../components/Home";
 import Auth from '../../Auth'
 
+import Region from "../views/new/Region";
+import City from "../views/new/City";
+import Quarter from "../views/new/Quarter";
+import Driver from "../views/new/Driver";
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -29,6 +34,30 @@ const routes = [
     path:'/admin/dashboard',
     name: "Home",
     component: Home,
+    beforeEnter: Auth
+  },
+  {
+    path:'/new/region',
+    name: "region",
+    component: Region,
+    beforeEnter: Auth
+  },
+  {
+    path:'/new/city',
+    name: 'city',
+    component: City,
+    beforeEnter: Auth
+  },
+  {
+    path:'/new/quarter',
+    name: "quarter",
+    component: Quarter,
+    beforeEnter: Auth
+  },
+  {
+    path: '/new/driver',
+    name: "driver",
+    component: Driver,
     beforeEnter: Auth
   }
 
