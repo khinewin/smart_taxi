@@ -1,8 +1,6 @@
 <template>
     <div class="container mt-5">
-        <div class="alert alert-success sticky-top" v-if="message">
-           <i class="fas fa-marker"></i> {{message}}
-        </div>
+
         <div class="row">
             <div class="col-sm-4">
                 <h6 class="text-secondary mb-2"><i class="fas fa-plus-circle"></i> New Region or State</h6>
@@ -28,9 +26,15 @@
                 </div>
             </div>
             <div class="col-sm-8">
+                <div class="alert alert-success sticky-top" v-if="message">
+                    <i class="fas fa-check-circle"></i> {{message}}
+                </div>
                 <h6 class="text-secondary mb-2"><i class="fas fa-city"></i> Regions or States</h6>
                 <div class="card shadow-sm">
                     <div class="card-body">
+                        <div class="text-center" v-if="loading">
+                            <b-spinner style="width: 5rem; height: 5rem;" label="Large Spinner" type="grow"></b-spinner>
+                        </div>
                         <table class="table table-hover table-borderless">
                             <tr v-for="(r,i) in regions" :key="i" class="shadow-sm">
                                 <td class="col-10">
@@ -45,7 +49,7 @@
                                     <div class="small text-secondary text-center">Actions</div>
                                     <div>
                                         <button @click="changeEdit(r)" class="btn btn-link btn-sm"><i class="fas fa-edit"></i></button>
-                                        <button @click="removeRegion(r.id)" class="btn btn-link text-danger btn-sm"><i class="fas fa-times-circle"></i></button>
+                                        <button @click="removeRegion(r.id, i)" class="btn btn-link text-danger btn-sm"><i class="fas fa-times-circle"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -79,7 +83,7 @@
 </template>
 
 <script>
-    import Firebase from "../../Firebase"
+    import Firebase from "../Firebase"
     export default {
         name: "region",
         data(){
@@ -91,8 +95,8 @@
                 message:false,
                 currentRegion:'',
                 currentRegionName:'',
-                currentRegionId:''
-
+                currentRegionId:'',
+                loading: false
             }
         },
         created(){
@@ -126,23 +130,26 @@
                         .then(()=>{
                             this.message="The selected region have been deleted."
                             this.clearMessage();
-                            this.regions=[]
-                            this.fetchRegions();
+                          // this.regions.splice(index, 1)
                         })
 
                 }
             },
             fetchRegions(){
-                Firebase.database().ref('/regions').once("value",(res)=>{
+                this.loading=true;
+                Firebase.database().ref('/regions').on("value",(res)=>{
+                    let region=[];
                     const val=res.val();
                     for(let i in val){
-                        let region={
+                        let r={
                             id: i,
                             region_state: val[i].region_state,
                             region_state_name: val[i].region_state_name
                         }
-                        this.regions.unshift(region)
+                        region.unshift(r)
+                        this.loading=false;
                     }
+                    this.regions=region;
                 })
             },
             clearMessage(){
@@ -160,8 +167,8 @@
                         this.message="The new region or state have been created."
                         this.clearMessage();
 
-                        this.regions=[]
-                        this.fetchRegions();
+                       // this.regions=[]
+                       // this.fetchRegions();
 
                         this.region_state='';
                         this.region_state_name='';

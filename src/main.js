@@ -31,6 +31,7 @@ new Vue({
           uid: user.uid,
         }
         store.dispatch("setUser", u);
+        router.push("/admin/dashboard")
       })
   },
   render: h => h(App)

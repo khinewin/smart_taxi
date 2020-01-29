@@ -7,10 +7,11 @@ import Signin from "../components/Signin";
 import Home from "../components/Home";
 import Auth from '../../Auth'
 
-import Region from "../views/new/Region";
-import City from "../views/new/City";
-import Quarter from "../views/new/Quarter";
-import Driver from "../views/new/Driver";
+import Region from "../views/Region";
+import City from "../views/City";
+import Quarter from "../views/Quarter";
+import Driver from "../views/Driver";
+import Street from "../views/Street";
 
 Vue.use(VueRouter)
 
@@ -37,27 +38,33 @@ const routes = [
     beforeEnter: Auth
   },
   {
-    path:'/new/region',
+    path:'/admin/region',
     name: "region",
     component: Region,
     beforeEnter: Auth
   },
   {
-    path:'/new/city',
+    path:'/admin/city',
     name: 'city',
     component: City,
     beforeEnter: Auth
   },
   {
-    path:'/new/quarter',
+    path:'/admin/quarter',
     name: "quarter",
     component: Quarter,
     beforeEnter: Auth
   },
   {
-    path: '/new/driver',
+    path: '/admin/driver',
     name: "driver",
     component: Driver,
+    beforeEnter: Auth
+  },
+  {
+    path: '/admin/street',
+    name: "street",
+    component: Street,
     beforeEnter: Auth
   }
 

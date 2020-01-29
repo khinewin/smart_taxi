@@ -19,10 +19,11 @@
                         <i class="fas fa-arrows-alt"></i> Actions
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdow1n">
-                        <a @click="goNew('region')" class="dropdown-item small" href="#!"> တိုင်း / ပြည်နယ်</a>
-                        <a @click="goNew('city')" class="dropdown-item small" href="#!"> မြို့ / မြို့နယ်</a>
-                        <a @click="goNew('quarter')" class="dropdown-item small" href="#!"> ရပ်ကွက်</a>
-                        <a @click="goNew('driver')" class="dropdown-item small" href="#!"> ယဥ်မောင်း</a>
+                        <a @click="goNew('region')" class="dropdown-item small"> တိုင်း / ပြည်နယ်</a>
+                        <a @click="goNew('city')" class="dropdown-item small"> မြို့ / မြို့နယ်</a>
+                        <a @click="goNew('quarter')" class="dropdown-item small"> ရပ်ကွက်</a>
+                        <a @click="goNew('street')" class="dropdown-item small"> လမ်း</a>
+                        <a @click="goNew('driver')" class="dropdown-item small"> ယဥ်မောင်း</a>
 
                     </div>
                 </li>
@@ -86,16 +87,19 @@
             goNew(res){
                 switch (res) {
                     case "region":
-                        this.$router.push("/new/region")
+                        this.$router.push("/admin/region")
                         break;
                     case "city":
-                        this.$router.push("/new/city")
+                        this.$router.push("/admin/city")
                         break;
                     case "quarter":
-                        this.$router.push("/new/quarter")
+                        this.$router.push("/admin/quarter")
                         break;
                     case "driver":
-                        this.$router.push("/new/driver")
+                        this.$router.push("/admin/driver")
+                        break;
+                        case "street":
+                            this.$router.push("/admin/street")
                         break;
 
                 }
@@ -119,5 +123,7 @@
 </script>
 
 <style scoped>
-
+.dropdown-menu a {
+    cursor: pointer;
+}
 </style>
