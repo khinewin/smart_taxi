@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
 
         <div class="row">
             <div class="col-sm-4">
@@ -70,7 +70,7 @@
                                     <div class="small text-secondary text-center">Actions</div>
                                     <div>
                                         <button  class="btn btn-link btn-sm"><i class="fas fa-edit"></i></button>
-                                        <button @click="removeCity(r.id, i)"  class="btn btn-link text-danger btn-sm"><i class="fas fa-times-circle"></i></button>
+                                        <button @click="removeQuarter(r.id)"  class="btn btn-link text-danger btn-sm"><i class="fas fa-times-circle"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -107,12 +107,12 @@
         },
         methods:{
             removeQuarter(id){
-                const result=confirm("The selected city or township will delete, are you sure ?");
+                const result=confirm("The selected quarter will delete, are you sure ?");
                 if(result){
-                    Firebase.database().ref("/cities/"+id).remove()
+                    Firebase.database().ref("/quarters/"+id).remove()
                         .then(()=>{
                             //this.cities.splice(index, 1)
-                            this.message="The selected city or township have been deleted."
+                            this.message="The selected quarter have been deleted."
                             this.clearMessage();
                         })
                         .catch(err=>{

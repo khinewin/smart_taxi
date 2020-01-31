@@ -1,12 +1,12 @@
 <template>
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
 
         <div class="row">
             <div class="col-sm-4">
                 <h6 class="text-secondary mb-2"><i class="fas fa-plus-circle"></i> New Street</h6>
                 <div class="card shadow">
                     <div class="card-body">
-                        <form @submit.prevent="saveCity">
+                        <form @submit.prevent="saveStreet">
                             <div class="form-group">
                                 <label for="region_state">Region / State</label>
                                 <select id="region_state" required v-model="region_state" class="custom-select" >
@@ -14,8 +14,20 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="city_township_name">City or Township Name</label>
-                                <input v-model="city_township_name" type="text" id="city_township_name" class="form-control" required>
+                                <label for="city_township_name">City / Township</label>
+                                <select id="city_township_name" required v-model="city_township_name" class="custom-select" >
+                                    <option v-for="c in cities" :key="c.id">{{c.city_township_name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="quarter_name">Quarter</label>
+                                <select id="quarter_name" required v-model="quarter_name" class="custom-select" >
+                                    <option v-for="q in quarters" :key="q.id">{{q.quarter_name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="street_name">Street Name</label>
+                                <input v-model="street_name" type="text" id="street_name" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary">Save</button>
@@ -28,24 +40,43 @@
                 <div class="alert alert-success sticky-top" v-if="message">
                     <i class="fas fa-check-circle"></i> {{message}}
                 </div>
-                <h6 class="text-secondary mb-2"><i class="fas fa-city"></i> Cities or Township</h6>
+                <h6 class="text-secondary mb-2"><i class="fas fa-street-view"></i> Streets</h6>
                 <div class="card shadow-sm">
                     <div class="card-body">
+                        <div class="text-center" v-if="loading">
+                            <b-spinner style="width: 5rem; height: 5rem;" label="Large Spinner" type="grow"></b-spinner>
+                        </div>
                         <table class="table table-hover table-borderless">
-                            <tr v-for="(r,i) in cities" :key="i" class="shadow-sm">
-                                <td class="col-5">
+                            <tr v-for="(s,i) in streets" :key="i" class="shadow-sm">
+                                <td class="col-sm-2">
                                     <div class="small text-secondary">Region or State</div>
                                     <div>
 
-                                        {{r.region_state}}
+                                        {{s.region_state}}
 
                                     </div>
                                 </td>
-                                <td class="col-5">
+                                <td class="col-sm-2">
                                     <div class="small text-secondary">City or Township</div>
                                     <div>
 
-                                        {{r.city_township_name}}
+                                        {{s.city_township_name}}
+
+                                    </div>
+                                </td>
+                                <td class="col-sm-2">
+                                    <div class="small text-secondary">Quarter</div>
+                                    <div>
+
+                                        {{s.quarter_name}}
+
+                                    </div>
+                                </td>
+                                <td class="col-sm-4">
+                                    <div class="small text-secondary">Street</div>
+                                    <div>
+
+                                        {{s.street_name}}
 
                                     </div>
                                 </td>
@@ -53,7 +84,7 @@
                                     <div class="small text-secondary text-center">Actions</div>
                                     <div>
                                         <button  class="btn btn-link btn-sm"><i class="fas fa-edit"></i></button>
-                                        <button @click="removeCity(r.id, i)"  class="btn btn-link text-danger btn-sm"><i class="fas fa-times-circle"></i></button>
+                                        <button @click="removeStreet(s.id)"  class="btn btn-link text-danger btn-sm"><i class="fas fa-times-circle"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -68,29 +99,37 @@
 <script>
     import Firebase from "../Firebase"
     export default {
-        name: "street",
+        name: "quarter",
         data(){
             return{
                 regions:[],
                 cities:[],
+                quarters:[],
+                streets:[],
                 region_state:'',
                 city_township_name:'',
+                quarter_name:'',
+                street_name:'',
                 error:false,
-                message:false
+                message:false,
+                loading:false,
             }
         },
         created(){
             this.fetchRegions();
             this.fetchCity();
+            this.fetchQuarters();
+            this.fetchStreets();
+
         },
         methods:{
-            removeCity(id, index){
-                const result=confirm("The selected city or township will delete, are you sure ?");
+            removeStreet(id){
+                const result=confirm("The selected street will delete, are you sure ?");
                 if(result){
-                    Firebase.database().ref("/cities/"+id).remove()
+                    Firebase.database().ref("/streets/"+id).remove()
                         .then(()=>{
-                            this.cities.splice(index, 1)
-                            this.message="The selected city or township have been deleted."
+                            //this.cities.splice(index, 1)
+                            this.message="The selected street have been deleted."
                             this.clearMessage();
                         })
                         .catch(err=>{
@@ -117,39 +156,76 @@
                 }, 3000)
             },
             fetchCity(){
-                Firebase.database().ref("/cities").once("value")
-                    .then(res=>{
-
-                        const city=[];
-                        const v=res.val();
-                        for(let i in v){
-                            const c={
-                                id: i,
-                                region_state: v[i].region_state,
-                                city_township_name: v[i].city_township_name
-                            }
-                            city.unshift(c)
+                this.loading=true;
+                Firebase.database().ref("/cities").on("value", (res)=>{
+                    const city=[];
+                    const v=res.val();
+                    for(let i in v){
+                        const c={
+                            id: i,
+                            region_state: v[i].region_state,
+                            city_township_name: v[i].city_township_name
                         }
-                        this.cities=city;
+                        city.unshift(c)
+                        this.loading=false;
+                    }
+                    this.cities=city;
+                })
 
-                    })
-                    .catch(err=>{
-                        console.log(err)
-                    })
             },
-            saveCity(){
-                Firebase.database().ref("/cities").push({
+            fetchQuarters(){
+                this.loading=true;
+                Firebase.database().ref("/quarters").on("value", (res)=>{
+                    const quarter=[];
+                    const v=res.val();
+                    for(let i in v){
+                        const c={
+                            id: i,
+                            region_state: v[i].region_state,
+                            city_township_name: v[i].city_township_name,
+                            quarter_name: v[i].quarter_name
+                        }
+                        quarter.unshift(c)
+                        this.loading=false;
+                    }
+                    this.quarters=quarter;
+                })
+
+            },
+            fetchStreets(){
+                this.loading=true;
+                Firebase.database().ref("/streets").on("value", (res)=>{
+                    const street=[];
+                    const v=res.val();
+                    for(let i in v){
+                        const c={
+                            id: i,
+                            region_state: v[i].region_state,
+                            city_township_name: v[i].city_township_name,
+                            quarter_name: v[i].quarter_name,
+                            street_name: v[i].street_name
+                        }
+                        street.unshift(c)
+                        this.loading=false;
+                    }
+                    this.streets=street;
+                })
+
+            },
+            saveStreet(){
+                Firebase.database().ref("/streets").push({
                     region_state: this.region_state,
-                    city_township_name: this.city_township_name
+                    city_township_name: this.city_township_name,
+                    quarter_name: this.quarter_name,
+                    street_name: this.street_name
                 })
                     .then(()=>{
                         //console.log()
-                        this.message="The new city or township have been created."
+                        this.message="The new street  have been created."
                         this.clearMessage();
-                        this.region_state='';
-                        this.city_township_name='';
-                        this.cities=[];
-                        this.fetchCity();
+                        this.street_name="";
+                        //this.cities=[];
+                        //this.fetchCity();
 
                     })
                     .catch(err=>{
